@@ -2,10 +2,11 @@
 #include <glm.hpp>
 #include "LineRenderer.h"
 
-enum class ShapeType {
+enum ShapeType {
 	PLANE = 0,
-	SPHERE/*,
+	SPHERE,/*
 	BOX*/
+	SHAPE_COUNT
 };
 
 class PhysicsObject

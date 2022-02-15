@@ -12,6 +12,8 @@ public:
 	void applyForce(glm::vec2 force);
 	void applyForceToActor(Rigidbody* actor2, glm::vec2 force);
 
+	void resolveCollision(Rigidbody* actor2);
+
 	virtual void Render(LineRenderer& lines);
 
 	glm::vec2 GetPosition()	{ return m_position; }

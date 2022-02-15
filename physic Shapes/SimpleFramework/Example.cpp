@@ -3,25 +3,25 @@
 //Physic Scene
 Example::Example() : GameBase()
 {
-	m_gravity = { 0,-9.82f };
+	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(3, 0), glm::vec2(0, 0), 4.0f,
+	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
 						0.5f, glm::vec4(1, 0, 0, 1));
-	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(1, 0), 3.0f,
-	//					0.5, glm::vec4(1, 0, 0, 1));	
+	/*Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
+						0.5, glm::vec4(1, 0, 0, 1));*/	
 	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));
 	addActor(ball1);
-	//addActor(ball2);
+	/*addActor(ball2);*/
 	//addActor(ball3);
 
-	//ball1->applyForce(glm::vec2(5, 0));
-	//ball2->applyForce(glm::vec2(2, 1));
-	//ball3->applyForce(glm::vec2(2, 1));
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -5);
+	Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
+	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
 
-	Plane* plane = new Plane(glm::vec2(0, 1), -2);
-
-	addActor(plane);
+	addActor(plane1);
+	addActor(plane2);
+	addActor(plane3);
 }
 
 Example::~Example()
@@ -55,7 +55,6 @@ void Example::Update()
 
 	for (int i = 0; i < m_actors.size(); i++)
 	{
-		//m_actors[i]->Update(deltaTime);
 		m_actors[i]->fixedUpdate(m_gravity, deltaTime);
 	}
 	//This call ensures that your mouse position and aspect ratio are maintained as correct.
@@ -68,10 +67,10 @@ void Example::Update()
 		{
 			PhysicsObject* object1 = m_actors[i];
 			PhysicsObject* object2 = m_actors[j];
-			int shapeId1 = (int)object1->getShapeID();
-			int shapeId2 = (int)object2->getShapeID();
+			int shapeId1 = object1->getShapeID();
+			int shapeId2 = object2->getShapeID();
 
-			int functionIdx = (shapeId1 * 2) + shapeId2;
+			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
 			{
@@ -142,7 +141,10 @@ bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		if (intersection < 0)
 		{
-			sphere->applyForce(-sphere->GetVelocity() * sphere->getMass());
+			/*sphere->applyForce(-sphere->GetVelocity() * sphere->getMass());*/
+
+			plane->resolveCollision(sphere);
+
 			return true;
 		}
 	}
@@ -162,8 +164,10 @@ bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		float radiusTotal = sphere1->GetRadius() + sphere2->GetRadius();
 		if (distance <= radiusTotal)
 		{
-			sphere1->SetVelocity(glm::vec2{ 0,0 });
-			sphere2->SetVelocity(glm::vec2{ 0,0 });
+			/*sphere1->SetVelocity(glm::vec2{ 0,0 });
+			sphere2->SetVelocity(glm::vec2{ 0,0 });*/
+
+			sphere1->resolveCollision(sphere2);
 
 			return true;
 		}
