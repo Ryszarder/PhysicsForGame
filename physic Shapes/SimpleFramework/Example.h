@@ -25,8 +25,13 @@ public:
 
 	static bool plane2Plane(PhysicsObject*, PhysicsObject*);
 	static bool plane2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool plane2AABB(PhysicsObject*, PhysicsObject*);
 	static bool sphere2Plane(PhysicsObject*, PhysicsObject*);
 	static bool sphere2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool sphere2AABB(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Plane(PhysicsObject*, PhysicsObject*);
+	static bool AABB2Sphere(PhysicsObject*, PhysicsObject*);
+	static bool AABB2AABB(PhysicsObject*, PhysicsObject*);
 
 protected:
 	glm::vec2 m_gravity;

@@ -51,8 +51,9 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	Example::plane2Plane,	Example::plane2Sphere,
-	Example::sphere2Plane,	Example::sphere2Sphere
+	Example::plane2Plane,	Example::plane2Sphere,	Example::plane2AABB,
+	Example::sphere2Plane,	Example::sphere2Sphere, Example::sphere2AABB,
+	Example::AABB2Plane,	Example::AABB2Sphere,	Example::AABB2AABB,
 };
 
 void Example::Update()
@@ -104,7 +105,7 @@ void Example::Render()
 
 	//Your drawing code goes here!
 
-/*	lines.DrawLineSegment({ 0, 0 }, { 5, 10 }, { 0, 1, 0 });*/	//Draw a line from the origin to the point (5.0, 10.0) in green.
+	//Draw a line from the origin to the point (5.0, 10.0) in green.
 
 	for (int i = 0; i < m_actors.size(); i++)
 	{
@@ -133,6 +134,11 @@ bool Example::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 	return sphere2Plane(obj2, obj1);
 }
 
+bool Example::plane2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return AABB2Plane(obj2, obj1);
+}
+
 bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
@@ -146,8 +152,6 @@ bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		if (intersection < 0)
 		{
-			/*sphere->applyForce(-sphere->GetVelocity() * sphere->getMass());*/
-
 			plane->resolveCollision(sphere);
 
 			return true;
@@ -169,14 +173,31 @@ bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		float radiusTotal = sphere1->GetRadius() + sphere2->GetRadius();
 		if (distance <= radiusTotal)
 		{
-			/*sphere1->SetVelocity(glm::vec2{ 0,0 });
-			sphere2->SetVelocity(glm::vec2{ 0,0 });*/
-
 			sphere1->resolveCollision(sphere2);
 
 			return true;
 		}
 	}
 
+	return false;
+}
+
+bool Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return false;
+}
+
+bool Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return false;
+}
+
+bool Example::AABB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+{
+	return false;
+}
+
+bool Example::AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+{
 	return false;
 }
