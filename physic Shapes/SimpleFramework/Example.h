@@ -4,6 +4,7 @@
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "AABB.h"
 
 
 class Example : public GameBase

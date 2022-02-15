@@ -48,6 +48,7 @@
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="AABB.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLFWCallbacks.h">
@@ -114,6 +115,7 @@
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="AABB.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

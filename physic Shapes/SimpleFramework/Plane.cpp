@@ -1,4 +1,5 @@
 #include "Plane.h"
+#include <cfloat>
 
 Plane::Plane(glm::vec2 normal, float distance) :
 		PhysicsObject(PLANE)
@@ -33,11 +34,11 @@ void Plane::resolveCollision(Rigidbody* actor2)
 {
 	glm::vec2 relativeVelocity = actor2->GetVelocity();
 
-	float m_mass = 10000;
+	float m_mass = FLT_MAX;
 
 	float elasticity = 1;
 	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), m_normal) /
-		((1 / m_mass) + (1 / actor2->getMass()));
+		((/*1 / m_mass*/ 0) + (1 / actor2->getMass()));
 
 	glm::vec2 force = m_normal * j;
 	actor2->applyForce(force);

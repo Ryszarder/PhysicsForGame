@@ -5,23 +5,28 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
-						0.5f, glm::vec4(1, 0, 0, 1));
-	/*Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
-						0.5, glm::vec4(1, 0, 0, 1));*/	
+	//Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
+	//					0.5f, glm::vec4(1, 0, 0, 1));
+	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
+	//					0.5, glm::vec4(1, 0, 0, 1));	
 	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));
-	addActor(ball1);
-	/*addActor(ball2);*/
+	//addActor(ball1);
+	//addActor(ball2);
 	//addActor(ball3);
 
-	Plane* plane1 = new Plane(glm::vec2(0, 1), -5);
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
 	Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
 	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
 
 	addActor(plane1);
 	addActor(plane2);
 	addActor(plane3);
+
+	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(0, 0), 40.0f, 
+						glm::vec2(0, 1), glm::vec2(1, 0), glm::vec4(1, 0, 0, 1));
+
+	addActor(aabb);
 }
 
 Example::~Example()
@@ -137,7 +142,7 @@ bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	{
 		float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
 		float sphereToPlane = planeOrigin - plane->GetDistance();
-		float intersection = sphereToPlane - sphere->GetRadius();
+		float intersection = sphereToPlane - sphere->GetRadius() ;
 
 		if (intersection < 0)
 		{
