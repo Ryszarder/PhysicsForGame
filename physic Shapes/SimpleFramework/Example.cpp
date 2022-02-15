@@ -3,21 +3,21 @@
 //Physic Scene
 Example::Example() : GameBase()
 {
-	m_gravity = { 0, 0 };
+	m_gravity = { 0,-9.82f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(3, 0), glm::vec2(-1, 0), 10.0f,
-						0.5, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(1, 0), 3.0f,
-						0.5, glm::vec4(1, 0, 0, 1));	
-	Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
-						0.5, glm::vec4(1, 0, 0, 1));
+	Sphere* ball1 = new Sphere(glm::vec2(3, 0), glm::vec2(0, 0), 4.0f,
+						0.5f, glm::vec4(1, 0, 0, 1));
+	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(1, 0), 3.0f,
+	//					0.5, glm::vec4(1, 0, 0, 1));	
+	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
+	//					0.5, glm::vec4(1, 0, 0, 1));
 	addActor(ball1);
-	addActor(ball2);
-	addActor(ball3);
+	//addActor(ball2);
+	//addActor(ball3);
 
-	ball1->applyForce(glm::vec2(5, 0));
-	ball2->applyForce(glm::vec2(2, 1));
-	ball3->applyForce(glm::vec2(2, 1));
+	//ball1->applyForce(glm::vec2(5, 0));
+	//ball2->applyForce(glm::vec2(2, 1));
+	//ball3->applyForce(glm::vec2(2, 1));
 
 	Plane* plane = new Plane(glm::vec2(0, 1), -2);
 
@@ -41,6 +41,7 @@ void Example::removeActor(PhysicsObject* actor)
 {
 
 }
+
 typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
@@ -67,8 +68,8 @@ void Example::Update()
 		{
 			PhysicsObject* object1 = m_actors[i];
 			PhysicsObject* object2 = m_actors[j];
-			int shapeId1 = object1->getShapeID();
-			int shapeId2 = object2->getShapeID();
+			int shapeId1 = (int)object1->getShapeID();
+			int shapeId2 = (int)object2->getShapeID();
 
 			int functionIdx = (shapeId1 * 2) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
@@ -125,11 +126,27 @@ bool Example::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 bool Example::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	return false;
+	return sphere2Plane(obj2, obj1);
 }
 
 bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	if (sphere != nullptr && plane != nullptr)
+	{
+		float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
+		float sphereToPlane = planeOrigin - plane->GetDistance();
+		float intersection = sphereToPlane - sphere->GetRadius();
+
+		if (intersection < 0)
+		{
+			sphere->applyForce(-sphere->GetVelocity() * sphere->getMass());
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -147,8 +164,10 @@ bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		{
 			sphere1->SetVelocity(glm::vec2{ 0,0 });
 			sphere2->SetVelocity(glm::vec2{ 0,0 });
+
+			return true;
 		}
 	}
 
-	return obj1, obj2;
+	return false;
 }

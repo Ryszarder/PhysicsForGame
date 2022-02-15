@@ -2,7 +2,7 @@
 #include <glm.hpp>
 #include "LineRenderer.h"
 
-enum ShapeType {
+enum class ShapeType {
 	PLANE = 0,
 	SPHERE/*,
 	BOX*/

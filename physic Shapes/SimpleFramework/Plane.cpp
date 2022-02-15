@@ -1,7 +1,7 @@
 #include "Plane.h"
 
 Plane::Plane(glm::vec2 normal, float distance) :
-		PhysicsObject(PLANE)
+		PhysicsObject(ShapeType::PLANE)
 {
 	m_distanceToOrigin = distance;
 	m_normal = normal;
