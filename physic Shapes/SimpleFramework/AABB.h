@@ -6,16 +6,22 @@ class AABB : public Rigidbody
 {
 public:
 	AABB(glm::vec2 position, glm::vec2 velocity, float mass,
-		glm::vec2 height, glm::vec2 length, glm::vec4 colour);
+		float xMin, float xMax, float yMin, float yMax, glm::vec4 colour);
 	~AABB();
 
 	virtual void Render(LineRenderer& lines);
 
+	float GetxMin() { return m_xMin; }
+	float GetxMax() { return m_xMax; }
+	float GetyMin() { return m_yMin; }
+	float GetyMax() { return m_yMax; }
 
 
 protected:
-	glm::vec2 m_height;
-	glm::vec2 m_length;
+	float m_xMin;
+	float m_xMax;
+	float m_yMin;
+	float m_yMax;
 	glm::vec4 m_colour;
 };
 

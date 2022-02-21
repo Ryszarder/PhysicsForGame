@@ -5,14 +5,14 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	//Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
-	//					0.5f, glm::vec4(1, 0, 0, 1));
-	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
-	//					0.5, glm::vec4(1, 0, 0, 1));	
+	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
+						0.5f, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
+						0.5, glm::vec4(1, 0, 0, 1));	
 	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));
-	//addActor(ball1);
-	//addActor(ball2);
+	addActor(ball1);
+	addActor(ball2);
 	//addActor(ball3);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
@@ -23,10 +23,10 @@ Example::Example() : GameBase()
 	addActor(plane2);
 	addActor(plane3);
 
-	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(0, 0), 40.0f, 
-						glm::vec2(0, 1), glm::vec2(1, 0), glm::vec4(1, 0, 0, 1));
+	//AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(5, 0), 4.0f, 
+	//					-1.0f, 1.0f, -1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 
-	addActor(aabb);
+	//addActor(aabb);
 }
 
 Example::~Example()
@@ -184,17 +184,84 @@ bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 
 bool Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
+	AABB* aabb = dynamic_cast<AABB*>(obj2);
+
+	if (sphere != nullptr && aabb != nullptr)
+	{
+		glm::vec2 clampedPos = sphere->GetPosition();
+
+		if (clampedPos.x < aabb->GetxMin()) clampedPos.x = aabb->GetxMin();
+		if (clampedPos.x > aabb->GetxMax()) clampedPos.x = aabb->GetxMax();
+		if (clampedPos.y < aabb->GetyMin()) clampedPos.y = aabb->GetyMin();
+		if (clampedPos.y > aabb->GetyMax()) clampedPos.y = aabb->GetyMax();
+
+		glm::vec2 sphereToClamped = sphere->GetPosition() - clampedPos;
+
+		if (glm::length(sphereToClamped) < sphere->GetRadius());
+		{
+			sphere->resolveCollision(aabb);
+			return true;
+		}
+	}
 	return false;
 }
 
 bool Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	AABB* aabb = dynamic_cast<AABB*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+
+	if (aabb != nullptr && plane != nullptr)
+	{
+		float planeOrigin = glm::dot(aabb->GetPosition(), plane->GetNormal());
+		float aabbToPlane = planeOrigin - plane->GetDistance();
+
+		float overlap1 = aabbToPlane - aabb->GetxMin();
+		float overlap2 = aabbToPlane - aabb->GetxMax();
+		float overlap3 = aabbToPlane - aabb->GetyMin();
+		float overlap4 = aabbToPlane - aabb->GetyMax();
+
+		if (overlap1 < overlap2 && overlap1 < overlap3 && overlap1 < overlap4)
+		{
+			if (overlap1 < 0)
+			{
+				plane->resolveCollision(aabb);
+				return true;
+			}
+		}
+		else if (overlap2 < overlap3 && overlap2 < overlap4)
+		{
+			if (overlap2 < 0)
+			{
+				plane->resolveCollision(aabb);
+				return true;
+			}
+		}
+		else if (overlap3 < overlap4)
+		{
+			if (overlap3 < 0)
+			{
+				plane->resolveCollision(aabb);
+				return true;
+			}
+		}
+		else
+		{
+			if (overlap4 < 0)
+			{
+				plane->resolveCollision(aabb);
+				return true;
+			}
+		}
+	}
+
 	return false;
 }
 
 bool Example::AABB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	return false;
+	return sphere2AABB(obj2, obj1);
 }
 
 bool Example::AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
