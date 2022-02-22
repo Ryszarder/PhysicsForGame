@@ -5,14 +5,14 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(-2, 0), 4.0f,
+	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(0, 0), 4.0f,
 						0.5f, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
-						0.5, glm::vec4(1, 0, 0, 1));	
+	addActor(ball1);
+	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
+	//					0.5, glm::vec4(1, 0, 0, 1));	
+	//addActor(ball2);
 	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));
-	addActor(ball1);
-	addActor(ball2);
 	//addActor(ball3);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
@@ -23,10 +23,9 @@ Example::Example() : GameBase()
 	addActor(plane2);
 	addActor(plane3);
 
-	//AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(5, 0), 4.0f, 
-	//					-1.0f, 1.0f, -1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-
-	//addActor(aabb);
+	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 
+						0.0f, 1.0f, 0.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	addActor(aabb);
 }
 
 Example::~Example()
@@ -66,6 +65,9 @@ void Example::Update()
 	//This call ensures that your mouse position and aspect ratio are maintained as correct.
 	GameBase::Update();
 
+
+	std::vector<CollisionData> collisions;
+
 	//Your physics (or whatever) code goes here!
 	for (int i = 0; i < m_actors.size(); i++)
 	{
@@ -80,9 +82,19 @@ void Example::Update()
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
 			{
-				collisionFunctionPtr(object1, object2);
+				CollisionData thisCollision = collisionFunctionPtr(object1, object2);
+				if (thisCollision.depth > 0)	//it's a real collision)
+				{ 
+
+				}
+				collisions.push_back(collisionFunctionPtr(object1, object2));
 			}
 		}
+	}
+
+	for (int i = 0; i < collisions.size(); i++)
+	{
+		collisions[i].ResolveCollision();
 	}
 }
 

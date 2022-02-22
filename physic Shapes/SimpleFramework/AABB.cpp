@@ -2,7 +2,7 @@
 
 AABB::AABB(glm::vec2 position, glm::vec2 velocity, float mass,
 			float xMin, float xMax, float yMin, float yMax, glm::vec4 colour) :
-		Rigidbody(BOX, position, velocity, 0, mass)
+		Rigidbody(BOX, position, velocity, mass)
 {
 	m_xMin = xMin;
 	m_xMax = xMax;
@@ -17,19 +17,18 @@ AABB::~AABB()
 
 void AABB::Render(LineRenderer& lines)
 {
-	//glm::vec2 p1 = m_position - m_xMin - m_yMin;
-	//glm::vec2 p2 = m_position - m_xMin + m_yMax;
-	//glm::vec2 p3 = m_position + m_xMax + m_yMax;
-	//glm::vec2 p4 = m_position + m_xMax - m_yMin;
+	float m_fwidth = m_xMax - m_xMin;
+	float m_fheight = m_yMax - m_yMin;
 
-	glm::vec2 p1 = { m_xMin, m_yMin };
-	glm::vec2 p2 = { m_xMin, m_yMax };
-	glm::vec2 p3 = { m_xMax, m_yMax };
-	glm::vec2 p4 = { m_xMax, m_yMin };
-
-	lines.AddPointToLine(m_position + p1);
-	lines.AddPointToLine(m_position + p2);
-	lines.AddPointToLine(m_position + p3);
-	lines.AddPointToLine(m_position + p4);
+	lines.AddPointToLine(glm::vec2(m_position.x - m_fwidth * 0.5f, 
+					m_position.y - m_fheight));
+	lines.AddPointToLine(glm::vec2(m_position.x - m_fwidth * 0.5f, 
+					m_position.y + m_fheight));
+	lines.AddPointToLine(glm::vec2(m_position.x + m_fwidth * 0.5f, 
+					m_position.y + m_fheight));
+	lines.AddPointToLine(glm::vec2(m_position.x + m_fwidth * 0.5f, 
+					m_position.y - m_fheight));
 	lines.FinishLineLoop();
+
+	lines.DrawCross(m_position, 1.0f);
 }
