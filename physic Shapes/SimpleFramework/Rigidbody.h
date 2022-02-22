@@ -26,4 +26,3 @@ protected:
 	glm::vec2 m_velocity;
 	float m_mass;
 };
-

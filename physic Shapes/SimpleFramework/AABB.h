@@ -24,4 +24,3 @@ protected:
 	float m_yMax;
 	glm::vec4 m_colour;
 };
-

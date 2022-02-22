@@ -8,7 +8,8 @@
 int main()
 {
 	Example program;	//Make the type of this variable your game application and you'll be good to go.
-
+	
+	//Runs program
 	while (program.IsRunning())
 	{
 		program.Update();

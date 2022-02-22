@@ -21,14 +21,14 @@ void AABB::Render(LineRenderer& lines)
 	float m_fheight = m_yMax - m_yMin;
 
 	lines.AddPointToLine(glm::vec2(m_position.x - m_fwidth * 0.5f, 
-					m_position.y - m_fheight));
+					m_position.y - m_fheight * 0.5f));
 	lines.AddPointToLine(glm::vec2(m_position.x - m_fwidth * 0.5f, 
-					m_position.y + m_fheight));
+					m_position.y + m_fheight * 0.5f));
 	lines.AddPointToLine(glm::vec2(m_position.x + m_fwidth * 0.5f, 
-					m_position.y + m_fheight));
+					m_position.y + m_fheight * 0.5f));
 	lines.AddPointToLine(glm::vec2(m_position.x + m_fwidth * 0.5f, 
-					m_position.y - m_fheight));
+					m_position.y - m_fheight * 0.5f));
 	lines.FinishLineLoop();
 
-	lines.DrawCross(m_position, 1.0f);
+	//lines.DrawCross(m_position, 1.0f);
 }

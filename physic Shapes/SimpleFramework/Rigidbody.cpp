@@ -47,5 +47,3 @@ void Rigidbody::resolveCollision(Rigidbody* actor2)
 void Rigidbody::Render(LineRenderer& lines)
 {
 }
-
-

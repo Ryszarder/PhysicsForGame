@@ -5,7 +5,7 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(6, 0), glm::vec2(0, 0), 4.0f,
+	Sphere* ball1 = new Sphere(glm::vec2(0, 2), glm::vec2(0, 0), 4.0f,
 						0.5f, glm::vec4(1, 0, 0, 1));
 	addActor(ball1);
 	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
@@ -15,13 +15,13 @@ Example::Example() : GameBase()
 	//					0.5, glm::vec4(1, 0, 0, 1));
 	//addActor(ball3);
 
-	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
-	Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
-	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	//Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
+	//Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
+	//Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
 
-	addActor(plane1);
-	addActor(plane2);
-	addActor(plane3);
+	//addActor(plane1);
+	//addActor(plane2);
+	//addActor(plane3);
 
 	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 
 						0.0f, 1.0f, 0.0f, 1.0f, glm::vec4(1, 0, 0, 1));
@@ -46,7 +46,7 @@ void Example::removeActor(PhysicsObject* actor)
 
 }
 
-typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+typedef CollisionData(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
@@ -65,9 +65,6 @@ void Example::Update()
 	//This call ensures that your mouse position and aspect ratio are maintained as correct.
 	GameBase::Update();
 
-
-	std::vector<CollisionData> collisions;
-
 	//Your physics (or whatever) code goes here!
 	for (int i = 0; i < m_actors.size(); i++)
 	{
@@ -85,15 +82,15 @@ void Example::Update()
 				CollisionData thisCollision = collisionFunctionPtr(object1, object2);
 				if (thisCollision.depth > 0)	//it's a real collision)
 				{ 
-
-				}
-				collisions.push_back(collisionFunctionPtr(object1, object2));
+					collisions.push_back(collisionFunctionPtr(object1, object2));
+				}	
 			}
 		}
 	}
 
 	for (int i = 0; i < collisions.size(); i++)
 	{
+		//??????????????????????????????
 		collisions[i].ResolveCollision();
 	}
 }
@@ -136,23 +133,26 @@ void Example::OnMouseClick(int mouseButton)
 
 }
 
-bool Example::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	return false;
+	CollisionData result{};
+	return result;
 }
 
-bool Example::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	return sphere2Plane(obj2, obj1);
 }
 
-bool Example::plane2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::plane2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	return AABB2Plane(obj2, obj1);
 }
 
-bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	CollisionData result{};
+
 	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
 	Plane* plane = dynamic_cast<Plane*>(obj2);
 
@@ -162,19 +162,16 @@ bool Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		float sphereToPlane = planeOrigin - plane->GetDistance();
 		float intersection = sphereToPlane - sphere->GetRadius() ;
 
-		if (intersection < 0)
-		{
-			plane->resolveCollision(sphere);
-
-			return true;
-		}
+		return result;
 	}
-
-	return false;
+	
+	return result;
 }
 
-bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	CollisionData result{};
+
 	Sphere* sphere1 = dynamic_cast<Sphere*>(obj1);
 	Sphere* sphere2 = dynamic_cast<Sphere*>(obj2);
 
@@ -185,17 +182,18 @@ bool Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		float radiusTotal = sphere1->GetRadius() + sphere2->GetRadius();
 		if (distance <= radiusTotal)
 		{
-			sphere1->resolveCollision(sphere2);
 
-			return true;
+			return result;
 		}
 	}
 
-	return false;
+	return result;
 }
 
-bool Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	CollisionData result{};
+
 	Sphere* sphere = dynamic_cast<Sphere*>(obj1);
 	AABB* aabb = dynamic_cast<AABB*>(obj2);
 
@@ -208,19 +206,19 @@ bool Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 		if (clampedPos.y < aabb->GetyMin()) clampedPos.y = aabb->GetyMin();
 		if (clampedPos.y > aabb->GetyMax()) clampedPos.y = aabb->GetyMax();
 
-		glm::vec2 sphereToClamped = sphere->GetPosition() - clampedPos;
+		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
+		float distance = glm::length(sphereToClamped);
+		result.depth = sphere->GetRadius() - distance;
 
-		if (glm::length(sphereToClamped) < sphere->GetRadius());
-		{
-			sphere->resolveCollision(aabb);
-			return true;
-		}
+		return result;
 	}
-	return false;
+	return result;
 }
 
-bool Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	CollisionData result{};
+
 	AABB* aabb = dynamic_cast<AABB*>(obj1);
 	Plane* plane = dynamic_cast<Plane*>(obj2);
 
@@ -238,45 +236,46 @@ bool Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		{
 			if (overlap1 < 0)
 			{
-				plane->resolveCollision(aabb);
-				return true;
+
+				return result;
 			}
 		}
 		else if (overlap2 < overlap3 && overlap2 < overlap4)
 		{
 			if (overlap2 < 0)
 			{
-				plane->resolveCollision(aabb);
-				return true;
+
+				return result;
 			}
 		}
 		else if (overlap3 < overlap4)
 		{
 			if (overlap3 < 0)
 			{
-				plane->resolveCollision(aabb);
-				return true;
+
+				return result;
 			}
 		}
 		else
 		{
 			if (overlap4 < 0)
 			{
-				plane->resolveCollision(aabb);
-				return true;
+
+				return result;
 			}
 		}
 	}
 
-	return false;
+	return result;
 }
 
-bool Example::AABB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::AABB2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	return sphere2AABB(obj2, obj1);
 }
 
-bool Example::AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
+CollisionData Example::AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
-	return false;
+	CollisionData result{};
+	return result;
 }
