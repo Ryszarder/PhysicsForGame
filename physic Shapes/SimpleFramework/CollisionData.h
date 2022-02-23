@@ -5,12 +5,14 @@
 class CollisionData
 {
 public:
-	glm::vec2 normal;
-	float depth;
-
-	PhysicsObject* shapeA;
-	PhysicsObject* shapeB;
-
+	CollisionData();
+	~CollisionData();
 
 	void ResolveCollision();
+
+	PhysicsObject* shapeA = nullptr;
+	PhysicsObject* shapeB = nullptr;
+
+	glm::vec2 normal;
+	float depth;
 };

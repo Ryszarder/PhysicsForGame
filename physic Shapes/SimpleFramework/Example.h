@@ -38,5 +38,5 @@ protected:
 	glm::vec2 m_gravity;
 	std::vector<PhysicsObject*> m_actors;
 	std::vector<CollisionData> collisions;
-	CollisionData collisionResult;
+	//CollisionData collisionResult;
 };

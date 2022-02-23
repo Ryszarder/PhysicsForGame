@@ -209,7 +209,8 @@ CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
 		float distance = glm::length(sphereToClamped);
 		result.depth = sphere->GetRadius() - distance;
-
+		result.shapeA = sphere;
+		result.shapeB = aabb;
 		return result;
 	}
 	return result;
