@@ -5,7 +5,7 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	//Sphere* ball1 = new Sphere(glm::vec2(5, 0), glm::vec2(2, 0), 4.0f,
+	//Sphere* ball1 = new Sphere(glm::vec2(5, 0), glm::vec2(-5, 0), 4.0f,
 	//					0.5f, glm::vec4(1, 0, 0, 1));
 	//addActor(ball1);
 	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
@@ -17,13 +17,13 @@ Example::Example() : GameBase()
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
 	addActor(plane1);
-	Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
-	addActor(plane2);
-	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
-	addActor(plane3);
+	//Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
+	//addActor(plane2);
+	//Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	//addActor(plane3);
 
 
-	AABB* aabb = new AABB(glm::vec2(-3, 0), glm::vec2(5, 0), 4.0f, 
+	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(5, 0), 4.0f, 
 						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb);
 }
@@ -160,7 +160,7 @@ CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	{
 		float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
 		float sphereToPlane = planeOrigin - plane->GetDistance();
-		float intersection = sphere->GetRadius() - sphereToPlane;
+		float intersection = sphereToPlane - sphere->GetRadius();
 		result.depth = intersection;
 		result.normal = plane->GetNormal();
 		result.shapeA = sphere;
@@ -229,46 +229,64 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 	if (aabb != nullptr && plane != nullptr)
 	{
-		float planeOrigin = glm::dot(aabb->GetPosition(), plane->GetNormal());
-		float aabbToPlane = planeOrigin - plane->GetDistance();
+		//float planeOrigin = glm::dot(aabb->GetPosition(), plane->GetNormal());
+		//float aabbToPlane = planeOrigin - plane->GetDistance();
 
-		float overlap1 = aabbToPlane - aabb->GetxMin();
-		float overlap2 = aabbToPlane - aabb->GetxMax();
-		float overlap3 = aabbToPlane - aabb->GetyMin();
-		float overlap4 = aabbToPlane - aabb->GetyMax();
+		//float overlap1 = aabbToPlane - aabb->GetxMin();
+		//float overlap2 = aabbToPlane - aabb->GetxMax();
+		//float overlap3 = aabbToPlane - aabb->GetyMin();
+		//float overlap4 = aabbToPlane - aabb->GetyMax();
 
-		if (overlap1 < overlap2 && overlap1 < overlap3 && overlap1 < overlap4)
-		{
-			if (overlap1 < 0)
-			{
+		glm::vec2 topLeft = { aabb->GetxMin(), aabb->GetyMax() };
+		glm::vec2 topRight = { aabb->GetxMax(), aabb->GetyMax() };
+		glm::vec2 bottomLeft = { aabb->GetxMin(), aabb->GetyMin() };
+		glm::vec2 bottomRight = { aabb->GetxMax(), aabb->GetyMin() };
 
-				return result;
-			}
-		}
-		else if (overlap2 < overlap3 && overlap2 < overlap4)
-		{
-			if (overlap2 < 0)
-			{
 
-				return result;
-			}
-		}
-		else if (overlap3 < overlap4)
-		{
-			if (overlap3 < 0)
-			{
-
-				return result;
-			}
-		}
-		else
-		{
-			if (overlap4 < 0)
-			{
-
-				return result;
-			}
-		}
+		//if (overlap1 < overlap2 && overlap1 < overlap3 && overlap1 < overlap4)
+		//{
+		//	if (overlap1 < 0)
+		//	{
+		//		result.depth = overlap1;
+		//		result.normal = plane->GetNormal();
+		//		result.shapeA = aabb;
+		//		result.shapeB = plane;
+		//		return result;
+		//	}
+		//}
+		//else if (overlap2 < overlap3 && overlap2 < overlap4)
+		//{
+		//	if (overlap2 < 0)
+		//	{
+		//		result.depth = overlap2;
+		//		result.normal = plane->GetNormal();
+		//		result.shapeA = aabb;
+		//		result.shapeB = plane;
+		//		return result;
+		//	}
+		//}
+		//else if (overlap3 < overlap4)
+		//{
+		//	if (overlap3 < 0)
+		//	{
+		//		result.depth = overlap3;
+		//		result.normal = plane->GetNormal();
+		//		result.shapeA = aabb;
+		//		result.shapeB = plane;
+		//		return result;
+		//	}
+		//}
+		//else
+		//{
+		//	if (overlap4 < 0)
+		//	{
+		//		result.depth = overlap4;
+		//		result.normal = plane->GetNormal();
+		//		result.shapeA = aabb;
+		//		result.shapeB = plane;
+		//		return result;
+		//	}
+		//}
 	}
 
 	return result;
