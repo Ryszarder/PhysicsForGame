@@ -5,9 +5,9 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	Sphere* ball1 = new Sphere(glm::vec2(0, 2), glm::vec2(0, 0), 4.0f,
-						0.5f, glm::vec4(1, 0, 0, 1));
-	addActor(ball1);
+	//Sphere* ball1 = new Sphere(glm::vec2(5, 0), glm::vec2(2, 0), 4.0f,
+	//					0.5f, glm::vec4(1, 0, 0, 1));
+	//addActor(ball1);
 	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));	
 	//addActor(ball2);
@@ -15,16 +15,16 @@ Example::Example() : GameBase()
 	//					0.5, glm::vec4(1, 0, 0, 1));
 	//addActor(ball3);
 
-	//Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
-	//Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
-	//Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
+	addActor(plane1);
+	Plane* plane2 = new Plane(glm::vec2(1, 0), -5);
+	addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	addActor(plane3);
 
-	//addActor(plane1);
-	//addActor(plane2);
-	//addActor(plane3);
 
-	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(0, 0), 4.0f, 
-						0.0f, 1.0f, 0.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	AABB* aabb = new AABB(glm::vec2(-3, 0), glm::vec2(5, 0), 4.0f, 
+						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb);
 }
 
@@ -90,8 +90,8 @@ void Example::Update()
 
 	for (int i = 0; i < collisions.size(); i++)
 	{
-		//??????????????????????????????
 		collisions[i].ResolveCollision();
+		//collisions[i].Draw(lines);
 	}
 }
 
@@ -160,8 +160,11 @@ CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	{
 		float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
 		float sphereToPlane = planeOrigin - plane->GetDistance();
-		float intersection = sphereToPlane - sphere->GetRadius() ;
-
+		float intersection = sphere->GetRadius() - sphereToPlane;
+		result.depth = intersection;
+		result.normal = plane->GetNormal();
+		result.shapeA = sphere;
+		result.shapeB = plane;
 		return result;
 	}
 	
@@ -177,14 +180,14 @@ CollisionData Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 
 	if (sphere1 != nullptr && sphere2 != nullptr)
 	{
-		glm::vec2 ciricletoCircle = sphere1->GetPosition() - sphere2->GetPosition();
+		glm::vec2 ciricletoCircle = sphere2->GetPosition() - sphere1->GetPosition();
 		float distance = glm::length(ciricletoCircle);
 		float radiusTotal = sphere1->GetRadius() + sphere2->GetRadius();
-		if (distance <= radiusTotal)
-		{
-
-			return result;
-		}
+		result.depth = radiusTotal - distance;
+		result.normal = glm::normalize(ciricletoCircle);
+		result.shapeA = sphere1;
+		result.shapeB = sphere2;
+		return result;
 	}
 
 	return result;
@@ -209,6 +212,7 @@ CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
 		float distance = glm::length(sphereToClamped);
 		result.depth = sphere->GetRadius() - distance;
+		result.normal = sphereToClamped / distance;
 		result.shapeA = sphere;
 		result.shapeB = aabb;
 		return result;

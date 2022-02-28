@@ -1,9 +1,11 @@
 #include "CollisionData.h"
 #include "Rigidbody.h"
+#include <limits>
 
 
 CollisionData::CollisionData()
 {
+
 }
 
 CollisionData::~CollisionData()
@@ -27,13 +29,12 @@ void CollisionData::ResolveCollision()
 
 		float elasticity = 1;
 		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-			((1 / rigidB->getMass()) + (1 / rigidB->getMass()));
+			((1 / rigidA->getMass()) + (1 / rigidB->getMass()));
 
 		glm::vec2 force = normal * j;
 
-		rigidA->applyForce(force);
-		rigidB->applyForce(-force);	//might be backwards!
-		//applyForceToActor(actor2, -force);
+		rigidA->applyForce(-force);
+		rigidB->applyForce(force);	//might be backwards!
 	}
 	else if (!(rigidA == nullptr && rigidB == nullptr))
 	{
@@ -45,24 +46,32 @@ void CollisionData::ResolveCollision()
 		//Thus 1 / mass will be treated as zero.
 
 
+		glm::vec2 relativeVelocity = rigid->GetVelocity();
 
-		//int x = 1;
-		//
-		//int y = ((x < 2) ? 5 : 7);
-		//
-		//int y;
-		//if (x < 2)
-		//{
-		//	y = 5;
-		//}
-		//else
-		//{
-		//	y = 7;
-		//}
+		float elasticity = 1;
+		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+			(1 / rigid->getMass());
 
-
-		
+		glm::vec2 force = normal * j;
+		rigid->applyForce(force);	
 	}
+	//int x = 1;
+	//
+	//int y = ((x < 2) ? 5 : 7);
+	//
+	//int y;
+	//if (x < 2)
+	//{
+	//	y = 5;
+	//}
+	//else
+	//{
+	//	y = 7;
+	//}
+}
+
+void CollisionData::Draw(LineRenderer& lines)
+{
 
 }
 
