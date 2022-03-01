@@ -5,29 +5,29 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.82f };
 	//Your initialisation code goes here!
-	//Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f,
-	//					0.5f, glm::vec4(1, 0, 0, 1));
-	//addActor(ball1);
-	//Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(5, 0), 3.0f,
-	//					0.5, glm::vec4(1, 0, 0, 1));	
-	//addActor(ball2);
+	Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f,
+						0.5f, glm::vec4(1, 0, 0, 1));
+	addActor(ball1);
+	Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(5, 0), 3.0f,
+						0.5, glm::vec4(1, 0, 0, 1));	
+	addActor(ball2);
 	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));
 	//addActor(ball3);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
 	addActor(plane1);
-	//Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
-	//addActor(plane2);
-	//Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
-	//addActor(plane3);
+	Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
+	addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	addActor(plane3);
 
-	AABB* aabb1 = new AABB(glm::vec2(-3, 3), glm::vec2(5, 0), 4.0f, 
+	AABB* aabb1 = new AABB(glm::vec2(4, 4), glm::vec2(5, 0), 4.0f, 
 						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb1);
-	AABB* aabb2 = new AABB(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f, 
-						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	addActor(aabb2);
+	//AABB* aabb2 = new AABB(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f, 
+	//					1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	//addActor(aabb2);
 }
 
 Example::~Example()
@@ -154,7 +154,7 @@ CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 	if (sphere != nullptr && plane != nullptr)
 	{
 		float spherewithNormal = glm::dot(sphere->GetPosition(), plane->GetNormal());
-		float intersection = spherewithNormal - (plane->GetDistance() + sphere->GetRadius());
+		float intersection = (plane->GetDistance() + sphere->GetRadius()) - spherewithNormal;
 		result.depth = intersection;
 		result.normal = plane->GetNormal();
 		result.shapeA = sphere;
@@ -177,7 +177,7 @@ CollisionData Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		glm::vec2 ciricletoCircle = sphere2->GetPosition() - sphere1->GetPosition();
 		float distance = glm::length(ciricletoCircle);
 		float radiusTotal = sphere1->GetRadius() + sphere2->GetRadius();
-		result.depth = distance - radiusTotal;
+		result.depth = radiusTotal - distance;
 		result.normal = glm::normalize(ciricletoCircle);
 		result.shapeA = sphere1;
 		result.shapeB = sphere2;
@@ -205,7 +205,7 @@ CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
 		float distance = glm::length(sphereToClamped);
-		result.depth = distance - sphere->GetRadius();
+		result.depth = sphere->GetRadius() - distance;
 		result.normal = sphereToClamped / distance;
 		result.shapeA = sphere;
 		result.shapeB = aabb;
@@ -230,20 +230,20 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 
 		float boxwithNormal1 = glm::dot(topLeft, plane->GetNormal());
-		float overlap1 = boxwithNormal1 - plane->GetDistance();
+		float overlap1 = plane->GetDistance() - boxwithNormal1;
 
 		float boxwithNormal2 = glm::dot(topRight, plane->GetNormal());
-		float overlap2 = boxwithNormal2 - plane->GetDistance();
+		float overlap2 = plane->GetDistance() - boxwithNormal2;
 
 		float boxwithNormal3 = glm::dot(bottomLeft, plane->GetNormal());
-		float overlap3 = boxwithNormal3 - plane->GetDistance();
+		float overlap3 = plane->GetDistance() - boxwithNormal3;
 
 		float boxwithNormal4 = glm::dot(bottomRight, plane->GetNormal());
-		float overlap4 = boxwithNormal4 - plane->GetDistance();
+		float overlap4 = plane->GetDistance() - boxwithNormal4;
 
-		if (overlap1 < overlap2 && overlap1 < overlap3 && overlap1 < overlap4)
+		if (overlap1 > overlap2 && overlap1 > overlap3 && overlap1 > overlap4)
 		{
-			if (overlap1 < 0)
+			if (overlap1 > 0)
 			{
 				result.depth = overlap1;
 				result.normal = plane->GetNormal();
@@ -252,9 +252,9 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 				return result;
 			}
 		}
-		else if (overlap2 < overlap3 && overlap2 < overlap4)
+		else if (overlap2 > overlap3 && overlap2 > overlap4)
 		{
-			if (overlap2 < 0)
+			if (overlap2 > 0)
 			{
 				result.depth = overlap2;
 				result.normal = plane->GetNormal();
@@ -263,9 +263,9 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 				return result;
 			}
 		}
-		else if (overlap3 < overlap4)
+		else if (overlap3 > overlap4)
 		{
-			if (overlap3 < 0)
+			if (overlap3 > 0)
 			{
 				result.depth = overlap3;
 				result.normal = plane->GetNormal();
@@ -276,7 +276,7 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		}
 		else
 		{
-			if (overlap4 < 0)
+			if (overlap4 > 0)
 			{
 				result.depth = overlap4;
 				result.normal = plane->GetNormal();
