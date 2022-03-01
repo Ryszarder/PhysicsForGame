@@ -7,10 +7,10 @@
 glm::mat4 GameBase::GetCameraTransform() const
 {
 	return glm::ortho(
-		-aspectRatio * cameraHeight / 2.0f + cameraCentre.x, 
-		aspectRatio * cameraHeight / 2.0f + cameraCentre.x,
-		-cameraHeight / 2.0f + cameraCentre.y,
-		cameraHeight / 2.0f + cameraCentre.y,
+		-aspectRatio * cameraHeight / 1.0f + cameraCentre.x, 
+		aspectRatio * cameraHeight / 1.0f + cameraCentre.x,
+		-cameraHeight / 1.0f + cameraCentre.y,
+		cameraHeight / 1.0f + cameraCentre.y,
 		-1.0f, 1.0f);
 }
 

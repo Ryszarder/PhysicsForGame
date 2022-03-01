@@ -1,7 +1,6 @@
 #pragma once
 #include "PhysicsObject.h"
 
-
 class CollisionData
 {
 public:
@@ -9,7 +8,6 @@ public:
 	~CollisionData();
 
 	void ResolveCollision();
-	void Draw(LineRenderer& lines);
 
 	PhysicsObject* shapeA = nullptr;
 	PhysicsObject* shapeB = nullptr;

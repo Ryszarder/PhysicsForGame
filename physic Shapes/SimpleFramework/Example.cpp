@@ -3,35 +3,38 @@
 //Physic Scene
 Example::Example() : GameBase()
 {
+	//Initialise the value of gravity
 	m_gravity = { 0, -9.82f };
-	//Your initialisation code goes here!
+
+	//Initialise the shapes with there vaules in their parameter and
+	//adds shape to the back of the vector 
 	Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f,
 						0.5f, glm::vec4(1, 0, 0, 1));
 	addActor(ball1);
 	Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(5, 0), 3.0f,
 						0.5, glm::vec4(1, 0, 0, 1));	
 	addActor(ball2);
-	//Sphere* ball3 = new Sphere(glm::vec2(0, 0), glm::vec2(1, 0), 3.0f,
-	//					0.5, glm::vec4(1, 0, 0, 1));
-	//addActor(ball3);
 
-	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
+	AABB* aabb1 = new AABB(glm::vec2(4, 4), glm::vec2(5, 0), 4.0f,
+		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	addActor(aabb1);
+	AABB* aabb2 = new AABB(glm::vec2(-2, 2), glm::vec2(-5, 0), 4.0f,
+		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	addActor(aabb2);
+
+	Plane* plane1 = new Plane(glm::vec2(0, 1), -8);
 	addActor(plane1);
 	Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
 	addActor(plane2);
 	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
 	addActor(plane3);
-
-	AABB* aabb1 = new AABB(glm::vec2(4, 4), glm::vec2(5, 0), 4.0f, 
-						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	addActor(aabb1);
-	//AABB* aabb2 = new AABB(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f, 
-	//					1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	//addActor(aabb2);
+	Plane* plane4 = new Plane(glm::vec2(0, -1), -8);
+	addActor(plane4);
 }
 
 Example::~Example()
 {
+	//Deletes the shapes when closing application
 	for (auto pActor : m_actors)
 	{
 		delete pActor;
@@ -40,16 +43,18 @@ Example::~Example()
 
 void Example::addActor(PhysicsObject* actor)
 {
+	//Adds the actor to the back of the vector
 	m_actors.push_back(actor);
 }
 
 void Example::removeActor(PhysicsObject* actor)
 {
-
 }
 
+//Creates typedef for collisionData
 typedef CollisionData(*fn)(PhysicsObject*, PhysicsObject*);
 
+//Function pointer array 
 static fn collisionFunctionArray[] =
 {
 	Example::plane2Plane,	Example::plane2Sphere,	Example::plane2AABB,
@@ -59,46 +64,54 @@ static fn collisionFunctionArray[] =
 
 void Example::Update()
 {
+	//For loops that updates the position of the actor
 	for (int i = 0; i < m_actors.size(); i++)
 	{
 		m_actors[i]->fixedUpdate(m_gravity, deltaTime);
 	}
-	//This call ensures that your mouse position and aspect ratio are maintained as correct.
+
+	//Updates GameBase
 	GameBase::Update();
 
-	//Your physics (or whatever) code goes here!
+	//Checks the collisions to see if any has occurred
+	//Runs a for loop in a for loop to shorten the time it takes to check all collisions
 	for (int i = 0; i < m_actors.size(); i++)
 	{
 		for (int j = i + 1; j < m_actors.size(); j++)
 		{
+			//Initialise the actors and identify the shapes of the actors
 			PhysicsObject* object1 = m_actors[i];
 			PhysicsObject* object2 = m_actors[j];
 			int shapeId1 = object1->getShapeID();
 			int shapeId2 = object2->getShapeID();
 
+			//Picks the function has the two shapes in there parameter
 			int functionIdx = (shapeId1 * SHAPE_COUNT) + shapeId2;
 			fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 			if (collisionFunctionPtr != nullptr)
 			{
+				//Runs through the collision and if the depth is larger than 0 an collision has occurred
 				CollisionData thisCollision = collisionFunctionPtr(object1, object2);
-				if (thisCollision.depth > 0)	//it's a real collision
+				if (thisCollision.depth > 0)
 				{ 
+					//Takes the collision and pushes it to the back of the vector
 					collisions.push_back(collisionFunctionPtr(object1, object2));
 				}	
 			}
 		}
 	}
 
+	//Runs through all the collisions stores in collisions vector
 	for (int i = 0; i < collisions.size(); i++)
 	{
 		collisions[i].ResolveCollision();
 	}
+	//Clears the vector of all elements inside
 	collisions.clear();
 }
 
 void Example::Render()
 {
-	//Example code that draws a coloured circle at the mouse position, whose colour depends on which buttons are down.
 	if (leftButtonDown)
 	{
 		lines.DrawCircle(cursorPos, 0.2f, { 1, 0, 0 });
@@ -112,15 +125,13 @@ void Example::Render()
 		lines.DrawCircle(cursorPos, 0.2f, { 0, 0, 1 });
 	}
 
-	//Your drawing code goes here!
-
-	//Draw a line from the origin to the point (5.0, 10.0) in green.
+	//Renders all shapes stored in the actor
 	for (int i = 0; i < m_actors.size(); i++)
 	{
 		m_actors[i]->Render(lines);
 	}
 	
-	//This call puts all the lines you've set up on screen - don't delete it or things won't work.
+	//Render GameBase
 	GameBase::Render();
 }
 
@@ -128,22 +139,29 @@ void Example::OnMouseClick(int mouseButton)
 {
 }
 
+//Collision check for Plane and Plane
 CollisionData Example::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	//Since planes are static they return nothing
 	CollisionData result{};
 	return result;
 }
 
+//Collision check plane and sphere
 CollisionData Example::plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	//Changes the order of objects in parameter and runs sphere2Plane function
 	return sphere2Plane(obj2, obj1);
 }
 
+//Collision check plane and aabb
 CollisionData Example::plane2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 {
+	//Changes the order of objects in parameter and runs aabb2Plane function
 	return AABB2Plane(obj2, obj1);
 }
 
+//Collision check sphere and plane
 CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 {
 	CollisionData result{};
@@ -161,7 +179,6 @@ CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		result.shapeB = plane;
 		return result;
 	}
-	
 	return result;
 }
 
@@ -183,7 +200,6 @@ CollisionData Example::sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 		result.shapeB = sphere2;
 		return result;
 	}
-
 	return result;
 }
 
@@ -227,7 +243,6 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 		glm::vec2 topRight = { aabb->GetxMax(), aabb->GetyMax() };
 		glm::vec2 bottomLeft = { aabb->GetxMin(), aabb->GetyMin() };
 		glm::vec2 bottomRight = { aabb->GetxMax(), aabb->GetyMin() };
-
 
 		float boxwithNormal1 = glm::dot(topLeft, plane->GetNormal());
 		float overlap1 = plane->GetDistance() - boxwithNormal1;
@@ -286,7 +301,6 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 			}
 		}
 	}
-
 	return result;
 }
 
@@ -343,6 +357,5 @@ CollisionData Example::AABB2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 			return result;
 		}
 	}
-
 	return result;
 }

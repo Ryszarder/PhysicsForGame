@@ -1,7 +1,6 @@
 #pragma once
 #include "Rigidbody.h"
 
-
 class AABB : public Rigidbody
 {
 public:
