@@ -5,9 +5,9 @@ Example::Example() : GameBase()
 {
 	m_gravity = { 0, -9.87f };
 	//Your initialisation code goes here!
-	//Sphere* ball1 = new Sphere(glm::vec2(5, 0), glm::vec2(-5, 0), 4.0f,
-	//					0.5f, glm::vec4(1, 0, 0, 1));
-	//addActor(ball1);
+	Sphere* ball1 = new Sphere(glm::vec2(5, 0), glm::vec2(-5, 0), 4.0f,
+						0.5f, glm::vec4(1, 0, 0, 1));
+	addActor(ball1);
 	//Sphere* ball2 = new Sphere(glm::vec2(-3, 0), glm::vec2(5, 0), 3.0f,
 	//					0.5, glm::vec4(1, 0, 0, 1));	
 	//addActor(ball2);
@@ -17,13 +17,12 @@ Example::Example() : GameBase()
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -4);
 	addActor(plane1);
-	//Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
-	//addActor(plane2);
-	//Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
-	//addActor(plane3);
+	Plane* plane2 = new Plane(glm::vec2(1, 0), -8);
+	addActor(plane2);
+	Plane* plane3 = new Plane(glm::vec2(-1, 0), -8);
+	addActor(plane3);
 
-
-	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(5, 0), 4.0f, 
+	AABB* aabb = new AABB(glm::vec2(0, 0), glm::vec2(3, 0), 4.0f, 
 						1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb);
 }
@@ -57,7 +56,6 @@ static fn collisionFunctionArray[] =
 
 void Example::Update()
 {
-
 	for (int i = 0; i < m_actors.size(); i++)
 	{
 		m_actors[i]->fixedUpdate(m_gravity, deltaTime);
@@ -91,13 +89,12 @@ void Example::Update()
 	for (int i = 0; i < collisions.size(); i++)
 	{
 		collisions[i].ResolveCollision();
-		//collisions[i].Draw(lines);
 	}
+	collisions.clear();
 }
 
 void Example::Render()
 {
-
 	//Example code that draws a coloured circle at the mouse position, whose colour depends on which buttons are down.
 	if (leftButtonDown)
 	{
@@ -115,22 +112,17 @@ void Example::Render()
 	//Your drawing code goes here!
 
 	//Draw a line from the origin to the point (5.0, 10.0) in green.
-
 	for (int i = 0; i < m_actors.size(); i++)
 	{
 		m_actors[i]->Render(lines);
 	}
 	
-
 	//This call puts all the lines you've set up on screen - don't delete it or things won't work.
 	GameBase::Render();
-
-	
 }
 
 void Example::OnMouseClick(int mouseButton)
 {
-
 }
 
 CollisionData Example::plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
@@ -158,9 +150,12 @@ CollisionData Example::sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 	if (sphere != nullptr && plane != nullptr)
 	{
-		float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
-		float sphereToPlane = planeOrigin - plane->GetDistance();
-		float intersection = sphereToPlane - sphere->GetRadius();
+		//float planeOrigin = glm::dot(sphere->GetPosition(), plane->GetNormal());
+		//float sphereToPlane = planeOrigin - plane->GetDistance();
+		//float intersection = sphere->GetRadius() - sphereToPlane;
+
+		float circlewithNormal = glm::dot(sphere->GetPosition(), plane->GetNormal());
+		float intersection = (plane->GetDistance() + sphere->GetRadius()) - circlewithNormal;
 		result.depth = intersection;
 		result.normal = plane->GetNormal();
 		result.shapeA = sphere;
@@ -229,64 +224,68 @@ CollisionData Example::AABB2Plane(PhysicsObject* obj1, PhysicsObject* obj2)
 
 	if (aabb != nullptr && plane != nullptr)
 	{
-		//float planeOrigin = glm::dot(aabb->GetPosition(), plane->GetNormal());
-		//float aabbToPlane = planeOrigin - plane->GetDistance();
-
-		//float overlap1 = aabbToPlane - aabb->GetxMin();
-		//float overlap2 = aabbToPlane - aabb->GetxMax();
-		//float overlap3 = aabbToPlane - aabb->GetyMin();
-		//float overlap4 = aabbToPlane - aabb->GetyMax();
-
 		glm::vec2 topLeft = { aabb->GetxMin(), aabb->GetyMax() };
 		glm::vec2 topRight = { aabb->GetxMax(), aabb->GetyMax() };
 		glm::vec2 bottomLeft = { aabb->GetxMin(), aabb->GetyMin() };
 		glm::vec2 bottomRight = { aabb->GetxMax(), aabb->GetyMin() };
 
 
-		//if (overlap1 < overlap2 && overlap1 < overlap3 && overlap1 < overlap4)
-		//{
-		//	if (overlap1 < 0)
-		//	{
-		//		result.depth = overlap1;
-		//		result.normal = plane->GetNormal();
-		//		result.shapeA = aabb;
-		//		result.shapeB = plane;
-		//		return result;
-		//	}
-		//}
-		//else if (overlap2 < overlap3 && overlap2 < overlap4)
-		//{
-		//	if (overlap2 < 0)
-		//	{
-		//		result.depth = overlap2;
-		//		result.normal = plane->GetNormal();
-		//		result.shapeA = aabb;
-		//		result.shapeB = plane;
-		//		return result;
-		//	}
-		//}
-		//else if (overlap3 < overlap4)
-		//{
-		//	if (overlap3 < 0)
-		//	{
-		//		result.depth = overlap3;
-		//		result.normal = plane->GetNormal();
-		//		result.shapeA = aabb;
-		//		result.shapeB = plane;
-		//		return result;
-		//	}
-		//}
-		//else
-		//{
-		//	if (overlap4 < 0)
-		//	{
-		//		result.depth = overlap4;
-		//		result.normal = plane->GetNormal();
-		//		result.shapeA = aabb;
-		//		result.shapeB = plane;
-		//		return result;
-		//	}
-		//}
+		float boxwithNormal1 = glm::dot(topLeft, plane->GetNormal());
+		float overlap1 = plane->GetDistance() - boxwithNormal1;
+
+		float boxwithNormal2 = glm::dot(topRight, plane->GetNormal());
+		float overlap2 = plane->GetDistance() - boxwithNormal2;
+
+		float boxwithNormal3 = glm::dot(bottomLeft, plane->GetNormal());
+		float overlap3 = plane->GetDistance() - boxwithNormal3;
+
+		float boxwithNormal4 = glm::dot(bottomRight, plane->GetNormal());
+		float overlap4 = plane->GetDistance() - boxwithNormal4;
+
+		if (overlap1 > overlap2 && overlap1 > overlap3 && overlap1 > overlap4)
+		{
+			if (overlap1 > 0)
+			{
+				result.depth = overlap1;
+				result.normal = plane->GetNormal();
+				result.shapeA = aabb;
+				result.shapeB = plane;
+				return result;
+			}
+		}
+		else if (overlap2 > overlap3 && overlap2 > overlap4)
+		{
+			if (overlap2 > 0)
+			{
+				result.depth = overlap2;
+				result.normal = plane->GetNormal();
+				result.shapeA = aabb;
+				result.shapeB = plane;
+				return result;
+			}
+		}
+		else if (overlap3 > overlap4)
+		{
+			if (overlap3 > 0)
+			{
+				result.depth = overlap3;
+				result.normal = plane->GetNormal();
+				result.shapeA = aabb;
+				result.shapeB = plane;
+				return result;
+			}
+		}
+		else
+		{
+			if (overlap4 > 0)
+			{
+				result.depth = overlap4;
+				result.normal = plane->GetNormal();
+				result.shapeA = aabb;
+				result.shapeB = plane;
+				return result;
+			}
+		}
 	}
 
 	return result;

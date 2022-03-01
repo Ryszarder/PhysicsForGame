@@ -15,7 +15,6 @@ AABB::~AABB()
 
 void AABB::Render(LineRenderer& lines)
 {
-
 	lines.AddPointToLine(glm::vec2(m_position.x - m_width * 0.5f, 
 					m_position.y - m_height * 0.5f));
 	lines.AddPointToLine(glm::vec2(m_position.x - m_width * 0.5f, 
@@ -25,6 +24,4 @@ void AABB::Render(LineRenderer& lines)
 	lines.AddPointToLine(glm::vec2(m_position.x + m_width * 0.5f, 
 					m_position.y - m_height * 0.5f));
 	lines.FinishLineLoop();
-
-	//lines.DrawCross(m_position, 1.0f);
 }

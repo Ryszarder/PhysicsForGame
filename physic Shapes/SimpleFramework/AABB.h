@@ -16,7 +16,6 @@ public:
 	float GetyMin() { return m_position.y - m_height / 2.0f; }
 	float GetyMax() { return m_position.y + m_height / 2.0f; }
 
-
 protected:
 	float m_width;
 	float m_height;

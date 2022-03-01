@@ -15,5 +15,4 @@ Sphere::~Sphere()
 void Sphere::Render(LineRenderer& lines)
 {
 	lines.DrawCircle(m_position, m_radius);
-	//lines.DrawCircle(GetPosition(), 0.5f);
 }
