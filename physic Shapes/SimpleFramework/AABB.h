@@ -11,7 +11,7 @@ public:
 
 	virtual void Render(LineRenderer& lines);
 
-	float GetxMin() { return m_position.x - m_width / 2.0f;}
+	float GetxMin() { return m_position.x - m_width / 2.0f; }
 	float GetxMax() { return m_position.x + m_width / 2.0f; }
 	float GetyMin() { return m_position.y - m_height / 2.0f; }
 	float GetyMax() { return m_position.y + m_height / 2.0f; }

@@ -1,6 +1,5 @@
 #include "CollisionData.h"
 #include "Rigidbody.h"
-#include <limits>
 
 
 CollisionData::CollisionData()
@@ -34,7 +33,7 @@ void CollisionData::ResolveCollision()
 		glm::vec2 force = normal * j;
 
 		rigidA->applyForce(-force);
-		rigidB->applyForce(force);	//might be backwards!
+		rigidB->applyForce(force);
 	}
 	else if (!(rigidA == nullptr && rigidB == nullptr))
 	{
@@ -48,12 +47,13 @@ void CollisionData::ResolveCollision()
 
 		glm::vec2 relativeVelocity = rigid->GetVelocity();
 
+
 		float elasticity = 1;
 		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-			(1 / rigid->getMass());
+				(1 / rigid->getMass());
 
 		glm::vec2 force = normal * j;
-		rigid->applyForce(force);	
+		rigid->applyForce(force);;
 	}
 	//int x = 1;
 	//

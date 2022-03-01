@@ -15,6 +15,7 @@ public:
 	PhysicsObject* shapeB = nullptr;
 
 	glm::vec2 normal;
+	//A to B
+
 	float depth;
-	float infinity = std::numeric_limits<float>::max();
 };
