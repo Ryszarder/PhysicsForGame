@@ -10,9 +10,6 @@ public:
 
 	virtual void fixedUpdate(glm::vec2 gravity, float deltaTime);
 	void applyForce(glm::vec2 force);
-	void applyForceToActor(Rigidbody* actor2, glm::vec2 force);
-
-	void resolveCollision(Rigidbody* actor2);
 
 	virtual void Render(LineRenderer& lines);
 

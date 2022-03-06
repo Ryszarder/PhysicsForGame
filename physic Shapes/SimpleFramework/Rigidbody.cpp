@@ -25,14 +25,6 @@ void Rigidbody::applyForce(glm::vec2 force)
 	m_velocity += m_acceleration;
 }
 
-void Rigidbody::applyForceToActor(Rigidbody* actor2, glm::vec2 force)
-{
-}
-
-void Rigidbody::resolveCollision(Rigidbody* actor2)
-{
-}
-
 void Rigidbody::Render(LineRenderer& lines)
 {
 }

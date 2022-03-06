@@ -26,11 +26,3 @@ void Plane::Render(LineRenderer& lines)
 
 	lines.DrawLineSegment(start, end, { 0, 1, 0 });
 }
-
-void Plane::resolveCollision(Rigidbody* actor2)
-{
-}
-
-void Plane::ResetPosition()
-{
-}

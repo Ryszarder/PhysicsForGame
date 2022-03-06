@@ -12,8 +12,7 @@ public:
 	PhysicsObject* shapeA = nullptr;
 	PhysicsObject* shapeB = nullptr;
 
-	glm::vec2 normal;
 	//A to B
-
+	glm::vec2 normal;
 	float depth;
 };
