@@ -7,10 +7,8 @@ public class CameraController : MonoBehaviour
     public Transform target;
     public float rotationSpeed = 180;
     public float distance = 4;
-    public float currentDistance = 4;
-    float backDistance = 4;
-    float zoomSpeed = 5;
     float heightOffset = 1.8f;
+    float currentDistance;
 
     // Start is called before the first frame update
     void Start()
@@ -27,23 +25,16 @@ public class CameraController : MonoBehaviour
             float dx = Input.GetAxis("Mouse Y");
             float dy = Input.GetAxis("Mouse X");
 
-            angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 70);
+            angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 10);
 
             angles.y -= dy * rotationSpeed * Time.deltaTime;
             transform.eulerAngles = angles;
-        }
-
-        if(Input.GetAxis("Mouse ScrollWheel") < 2)
-        {
-            backDistance = Mathf.Clamp(backDistance - Input.GetAxis("Mouse ScrollWheel") * zoomSpeed, 4, 10);
-            distance = backDistance;
         }
 
         RaycastHit hit;
         if(Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, distance))
         {
             currentDistance = hit.distance;
-            backDistance = currentDistance;
         }
         else
         {
