@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
             float dx = Input.GetAxis("Mouse Y");
             float dy = Input.GetAxis("Mouse X");
 
-            angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 10);
+            angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 70);
 
             angles.y -= dy * rotationSpeed * Time.deltaTime;
             transform.eulerAngles = angles;
