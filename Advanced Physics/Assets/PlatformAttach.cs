@@ -5,23 +5,38 @@ using UnityEngine;
 public class PlatformAttach : MonoBehaviour
 {
     public GameObject Player;
+    public GameObject[] waypoint;
+    int currentWaypointIndex = 0;
 
-    CharacterController cc;
+    float speed = 1f;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        if(Vector3.Distance(transform.position, waypoint[currentWaypointIndex].transform.position) < .1f)
+        {
+            currentWaypointIndex++;
+            if(currentWaypointIndex >= waypoint.Length)
+            {
+                currentWaypointIndex = 0;
+            }
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, waypoint[currentWaypointIndex].transform.position, speed * Time.deltaTime);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == Player)
         {
-            Debug.Log("Test");
+            Debug.Log("Enter");
 
             other.transform.parent = transform;
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject == Player)
-        {
-            Player.transform.position += Player.transform.up * Time.deltaTime;
         }
     }
 
@@ -29,21 +44,9 @@ public class PlatformAttach : MonoBehaviour
     {
         if (other.gameObject == Player)
         {
-            Debug.Log("back");
+            Debug.Log("Exit");
 
             other.transform.parent = null;
         }
     }
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 }
