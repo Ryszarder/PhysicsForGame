@@ -27,7 +27,7 @@ public class CameraController : MonoBehaviour
 
             angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 70);
 
-            angles.y -= dy * rotationSpeed * Time.deltaTime;
+            angles.y += dy * rotationSpeed * Time.deltaTime;
             transform.eulerAngles = angles;
         }
 
