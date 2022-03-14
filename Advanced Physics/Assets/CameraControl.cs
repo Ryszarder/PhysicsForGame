@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraControl : MonoBehaviour
 {
     public Transform target;
     public float rotationSpeed = 180;
@@ -13,13 +13,13 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1))
         {
             Vector3 angles = transform.eulerAngles;
             float dx = Input.GetAxis("Mouse Y");
@@ -27,12 +27,12 @@ public class CameraController : MonoBehaviour
 
             angles.x = Mathf.Clamp(angles.x + dx * rotationSpeed * Time.deltaTime, 0, 70);
 
-            angles.y += dy * rotationSpeed * Time.deltaTime;
+            angles.y -= dy * rotationSpeed * Time.deltaTime;
             transform.eulerAngles = angles;
         }
 
         RaycastHit hit;
-        if(Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, distance))
+        if (Physics.Raycast(GetTargetPosition(), -transform.forward, out hit, distance))
         {
             currentDistance = hit.distance;
         }
