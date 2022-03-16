@@ -8,19 +8,19 @@ Example::Example() : GameBase()
 
 	//Initialise the shapes with there vaules in their parameter and
 	//adds shape to the back of the vector 
-	Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-5, 0), 4.0f,
+	Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-4, 0), 4.0f,
 						0.5f, glm::vec4(1, 0, 0, 1));
 	addActor(ball1);
-	Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(5, 0), 3.0f,
+	Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(4, 0), 4.0f,
 						0.5, glm::vec4(1, 0, 0, 1));	
 	addActor(ball2);
 
-	AABB* aabb1 = new AABB(glm::vec2(4, 4), glm::vec2(5, 0), 4.0f,
+	AABB* aabb1 = new AABB(glm::vec2(0, 0), glm::vec2(0, 3), 4.0f,
 		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb1);
-	AABB* aabb2 = new AABB(glm::vec2(-2, 2), glm::vec2(-5, 0), 4.0f,
-		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	addActor(aabb2);
+	//AABB* aabb2 = new AABB(glm::vec2(7, 7), glm::vec2(3, 0), 4.0f,
+	//	1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	//addActor(aabb2);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -8);
 	addActor(plane1);
