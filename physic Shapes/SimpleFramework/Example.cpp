@@ -8,19 +8,19 @@ Example::Example() : GameBase()
 
 	//Initialise the shapes with there vaules in their parameter and
 	//adds shape to the back of the vector 
-	Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-4, 0), 4.0f,
-						0.5f, glm::vec4(1, 0, 0, 1));
-	addActor(ball1);
-	Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(4, 0), 4.0f,
-						0.5, glm::vec4(1, 0, 0, 1));	
-	addActor(ball2);
+	//Sphere* ball1 = new Sphere(glm::vec2(3, 3), glm::vec2(-4, 0), 4.0f,
+	//					0.5f, glm::vec4(1, 0, 0, 1));
+	//addActor(ball1);
+	//Sphere* ball2 = new Sphere(glm::vec2(-3, 3), glm::vec2(4, 0), 4.0f,
+	//					0.5, glm::vec4(1, 0, 0, 1));	
+	//addActor(ball2);
 
-	AABB* aabb1 = new AABB(glm::vec2(0, 0), glm::vec2(0, 3), 4.0f,
+	AABB* aabb1 = new AABB(glm::vec2(-7, 7.1f), glm::vec2(-3, 0), 4.0f,
 		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
 	addActor(aabb1);
-	//AABB* aabb2 = new AABB(glm::vec2(7, 7), glm::vec2(3, 0), 4.0f,
-	//	1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	//addActor(aabb2);
+	AABB* aabb2 = new AABB(glm::vec2(7, 7), glm::vec2(3, 0), 4.0f,
+		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	addActor(aabb2);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -8);
 	addActor(plane1);
@@ -137,6 +137,18 @@ void Example::Render()
 
 void Example::OnMouseClick(int mouseButton)
 {
+	if (mouseButton == 0)
+	{
+		AABB* aabb3 = new AABB(cursorPos, glm::vec2(-3, 0), 4.0f,
+			1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+		addActor(aabb3);
+	}
+	else
+	{
+		Sphere* ball1 = new Sphere(cursorPos, glm::vec2(-4, 0), 4.0f,
+						0.5f, glm::vec4(1, 0, 0, 1));
+		addActor(ball1);
+	}
 }
 
 //Collision check for Plane and Plane
@@ -221,11 +233,19 @@ CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
 		float distance = glm::length(sphereToClamped);
-		result.depth = sphere->GetRadius() - distance;
-		result.normal = sphereToClamped / distance;
-		result.shapeA = sphere;
-		result.shapeB = aabb;
-		return result;
+		if (distance < 0.00001f) //trouble!
+		{
+			//Hack in this situation - treat the box as a circle for purposes of normal/depth
+			//there is a correct solution but it's a bit more involved.
+		}
+		else
+		{
+			result.depth = sphere->GetRadius() - distance;
+			result.normal = sphereToClamped / distance;
+			result.shapeA = sphere;
+			result.shapeB = aabb;
+			return result;
+		}
 	}
 	return result;
 }

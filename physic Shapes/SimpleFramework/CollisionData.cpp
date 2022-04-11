@@ -19,14 +19,16 @@ void CollisionData::ResolveCollision()
 	{
 		glm::vec2 relativeVelocity = rigidB->GetVelocity() - rigidA->GetVelocity();
 
-		float elasticity = 0.9f;
-		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+		float elasticity = 1;
+		float relativeVelocityDot = dot(relativeVelocity, normal);
+		if (relativeVelocityDot > 0) return;
+		float j = -(1 + elasticity) * relativeVelocityDot /
 			((1 / rigidA->getMass()) + (1 / rigidB->getMass()));
 
 		glm::vec2 force = normal * j;
 
-		rigidA->applyPosition(-force);
-		rigidB->applyPosition(force);
+		rigidA->applyForce(-force);
+		rigidB->applyForce(force);
 	}
 	else if (!(rigidA == nullptr && rigidB == nullptr))
 	{
@@ -36,10 +38,12 @@ void CollisionData::ResolveCollision()
 		glm::vec2 relativeVelocity = rigid->GetVelocity();
 
 		float elasticity = 1;
-		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+		float relativeVelocityDot = dot(relativeVelocity, normal);
+		if (relativeVelocityDot > 0) return;
+		float j = -(1 + elasticity) * relativeVelocityDot /
 				(1 / rigid->getMass());
 
 		glm::vec2 force = normal * j;
-		rigid->applyPosition(force);;
+		rigid->applyForce(force);;
 	}
 }
