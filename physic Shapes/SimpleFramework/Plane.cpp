@@ -8,10 +8,6 @@ Plane::Plane(glm::vec2 normal, float distance) :
 	m_normal = normal;
 }
 
-Plane::~Plane()
-{
-}
-
 void Plane::fixedUpdate(glm::vec2 gravity, float deltaTime) 
 {
 }

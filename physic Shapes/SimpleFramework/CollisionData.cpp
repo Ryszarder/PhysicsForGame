@@ -6,10 +6,6 @@ CollisionData::CollisionData()
 
 }
 
-CollisionData::~CollisionData()
-{
-}
-
 void CollisionData::ResolveCollision()
 {
 	Rigidbody* rigidA = dynamic_cast<Rigidbody*>(shapeA);

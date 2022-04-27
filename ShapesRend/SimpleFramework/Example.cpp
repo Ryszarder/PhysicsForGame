@@ -9,17 +9,17 @@ Example::Example() : GameBase()
 	circleTest.centre = { 3, 3 };
 	circleTest.radius = 1.4f;
 	
-	circleTest2.centre = { 0, 0 };
-	circleTest2.radius = 1.4f;
+	//circleTest2.centre = { 0, 0 };
+	//circleTest2.radius = 1.4f;
 }
 
 void Example::Update()
 {
 	circleTest.centre = cursorPos;
 
-	//collisionResult = CollideCircleToBox(circleTest, boxTest, lines);
+	collisionResult = CollideCircleToBox(circleTest, boxTest, lines);
 
-	collisionResult = CollideCircleToCircle(circleTest, circleTest2, lines);
+	//collisionResult = CollideCircleToCircle(circleTest, circleTest2, lines);
 	//This call ensures that your mouse position and aspect ratio are maintained as correct.
 	GameBase::Update();
 

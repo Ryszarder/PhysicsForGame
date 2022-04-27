@@ -6,7 +6,6 @@ class Sphere : public Rigidbody
 public:
 	Sphere(glm::vec2 position, glm::vec2 velocity, 
 		float mass, float radius, glm::vec4 colour);
-	~Sphere();
 
 	 virtual void Render(LineRenderer& lines);
 

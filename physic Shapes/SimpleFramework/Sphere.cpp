@@ -8,10 +8,6 @@ Sphere::Sphere(glm::vec2 position, glm::vec2 velocity,
 	m_colour = colour;
 }
 
-Sphere::~Sphere()
-{
-}
-
 void Sphere::Render(LineRenderer& lines)
 {
 	lines.DrawCircle(m_position, m_radius);

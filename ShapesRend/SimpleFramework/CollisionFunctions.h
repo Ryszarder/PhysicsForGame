@@ -5,4 +5,4 @@
 
 CollisionData CollideCircleToBox(const Circle& circle, const AABB& box, LineRenderer& lines);
 
-CollisionData CollideCircleToCircle(const Circle& shapeA, const Circle& shapeB, LineRenderer& lines);
+//CollisionData CollideCircleToCircle(const Circle& shapeA, const Circle& shapeB, LineRenderer& lines);

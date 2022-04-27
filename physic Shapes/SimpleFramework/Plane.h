@@ -6,7 +6,6 @@ class Plane : public PhysicsObject
 {
 public:
 	Plane(glm::vec2 normal, float distance);
-	~Plane();
 
 	virtual void fixedUpdate(glm::vec2 gravity, float deltaTime);
 	virtual void Render(LineRenderer& lines);

@@ -22,22 +22,22 @@ CollisionData CollideCircleToBox(const Circle& circle, const AABB& box, LineRend
 	return result;
 }
 
-CollisionData CollideCircleToCircle(const Circle& shapeA, const Circle& shapeB, LineRenderer& lines)
-{
-	CollisionData result{};
-
-	glm::vec2 circleToCircle = shapeB.centre - shapeA.centre;
-	float distance = glm::length(circleToCircle);
-	float radiusTotal = shapeA.radius + shapeB.radius;
-	if (distance <= radiusTotal)
-	{
-		result.depth = shapeB.radius - distance;
-		result.normal = circleToCircle / distance;
-		result.worldPos = shapeB.centre;
-		result.worldPos2 = shapeA.centre;
-	}
-
-
-	return result;
-}
+//CollisionData CollideCircleToCircle(const Circle& shapeA, const Circle& shapeB, LineRenderer& lines)
+//{
+//	CollisionData result{};
+//
+//	glm::vec2 circleToCircle = shapeB.centre - shapeA.centre;
+//	float distance = glm::length(circleToCircle);
+//	float radiusTotal = shapeA.radius + shapeB.radius;
+//	if (distance <= radiusTotal)
+//	{
+//		result.depth = shapeB.radius - distance;
+//		result.normal = circleToCircle / distance;
+//		result.worldPos = shapeB.centre;
+//		result.worldPos2 = shapeA.centre;
+//	}
+//
+//
+//	return result;
+//}
 

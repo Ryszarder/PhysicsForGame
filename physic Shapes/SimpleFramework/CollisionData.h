@@ -5,7 +5,6 @@ class CollisionData
 {
 public:
 	CollisionData();
-	~CollisionData();
 
 	void ResolveCollision();
 

@@ -6,7 +6,6 @@ class AABB : public Rigidbody
 public:
 	AABB(glm::vec2 position, glm::vec2 velocity, float mass,
 		float width, float height, glm::vec4 colour);
-	~AABB();
 
 	virtual void Render(LineRenderer& lines);
 

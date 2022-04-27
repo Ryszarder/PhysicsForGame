@@ -15,12 +15,12 @@ Example::Example() : GameBase()
 	//					0.5, glm::vec4(1, 0, 0, 1));	
 	//addActor(ball2);
 
-	AABB* aabb1 = new AABB(glm::vec2(-7, 7.1f), glm::vec2(-3, 0), 4.0f,
-		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	addActor(aabb1);
-	AABB* aabb2 = new AABB(glm::vec2(7, 7), glm::vec2(3, 0), 4.0f,
-		1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
-	addActor(aabb2);
+	//AABB* aabb1 = new AABB(glm::vec2(-7, 7.1f), glm::vec2(-3, 0), 4.0f,
+	//	1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	//addActor(aabb1);
+	//AABB* aabb2 = new AABB(glm::vec2(7, 7), glm::vec2(3, 0), 4.0f,
+	//	1.0f, 1.0f, glm::vec4(1, 0, 0, 1));
+	//addActor(aabb2);
 
 	Plane* plane1 = new Plane(glm::vec2(0, 1), -8);
 	addActor(plane1);
@@ -233,10 +233,15 @@ CollisionData Example::sphere2AABB(PhysicsObject* obj1, PhysicsObject* obj2)
 
 		glm::vec2 sphereToClamped = clampedPos - sphere->GetPosition();
 		float distance = glm::length(sphereToClamped);
-		if (distance < 0.00001f) //trouble!
+		if (distance < 0.00001f)
 		{
-			//Hack in this situation - treat the box as a circle for purposes of normal/depth
-			//there is a correct solution but it's a bit more involved.
+			glm::vec2 sphereToBox = aabb->GetPosition() - sphere->GetPosition();
+			float dist = glm::length(sphereToBox);
+			result.depth = sphere->GetRadius() - dist;
+			result.normal = glm::normalize(sphereToBox);
+			result.shapeA = sphere;
+			result.shapeB = aabb;
+			return result;
 		}
 		else
 		{

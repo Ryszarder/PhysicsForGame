@@ -9,9 +9,6 @@ AABB::AABB(glm::vec2 position, glm::vec2 velocity, float mass,
 	m_colour = colour;
 }
 
-AABB::~AABB()
-{
-}
 
 void AABB::Render(LineRenderer& lines)
 {
